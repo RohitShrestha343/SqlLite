@@ -1,10 +1,17 @@
 package com.bmi.sqllite.helper;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import com.bmi.sqllite.Word;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyHelper extends SQLiteOpenHelper {
 
@@ -28,14 +35,34 @@ public class MyHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase=getWritableDatabase();
-        String query="CREATE TABLE "+tblWord+"("+wordId+"Integer Primary Key AutoIncrement, "+wordName+" TEXT,"+meaning+" TEXT "+")";
+        String query="CREATE TABLE "+tblWord+"("+wordId+" Integer Primary Key AutoIncrement, "+wordName+" TEXT,"+meaning+" TEXT "+")";
         sqLiteDatabase.execSQL(query);
 
     }
+public boolean InsertData(String word, String meaning, SQLiteDatabase db){
+        try{
+            String query1="insert into tblWord(wordName,meaning) values('"+ word+"','"+meaning+"')";
+            db.execSQL(query1);
+            return true;
+        }catch (Exception e){
+            Log.d("Error: ",e.toString());
+            return false;
+        }
+}
+public List<Word>GetAllWords(SQLiteDatabase db){
+        List<Word> dictionaryList= new ArrayList<>();
+    Cursor cursor=db.rawQuery("select * from tblWord",null);
+    if(cursor.getCount()>0){
+        while (cursor.moveToNext()){
+            dictionaryList.add(new Word(cursor.getInt(0),cursor.getString(1),cursor.getString(2)));
+        }
+    }
+    return dictionaryList;
+}
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
+
 }

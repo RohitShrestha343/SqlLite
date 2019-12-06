@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.bmi.sqllite.helper.MyHelper;
 
@@ -20,13 +21,18 @@ private Button btnSave;
         etWord=findViewById(R.id.etWord);
         etMeaning=findViewById(R.id.etMeaning);
         btnSave=findViewById(R.id.btnSave);
-//        final SQLiteDatabase sqLiteDatabase=myHelper.getWritableDatabase();
         btnSave.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 MyHelper myHelper=new MyHelper(MainActivity.this);
-
+                SQLiteDatabase sqLiteDatabase=myHelper.getWritableDatabase();
+boolean id=myHelper.InsertData(etWord.getText().toString(),etMeaning.getText().toString(),sqLiteDatabase);
+if (id=true){
+    Toast.makeText(MainActivity.this, "Sucessfully Added", Toast.LENGTH_SHORT).show();
+}else {
+    Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+}
             }
         });
 
